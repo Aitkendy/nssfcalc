@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Uganda Tax & NSSF Calculator</title>
+        <style>
+            /* Add some basic styling for the calculator elements within the footer */
+            footer {
+                margin-top: 50px; /* Add some space above the footer */
+                padding: 20px;
+                background-color: #f2f2f2;
+                border-top: 1px solid #ccc;
+                text-align: center; /* Center the calculator elements */
+            }
+            footer h2 {
+                color: #333;
+                margin-bottom: 20px;
+            }
+            input[type="number"] {
+                padding: 8px;
+                width: 200px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+            button {
+                padding: 10px 20px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-bottom: 10px; /* Added margin for spacing */
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            #payeResult, #nssfResult, #netSalaryResult, #lstResult { /* Added #lstResult */
+                margin-top: 10px;
+                font-weight: bold;
+                color: #333;
+                font-size: 1.1em;
+            }
+            #nssfResult {
+                color: #8B0000; /* Dark red for NSSF */
+            }
+            #lstResult { /* Styling for LST result */
+                color: #4B0082; /* Indigo for LST */
+            }
+            #netSalaryResult {
+                color: #006400; /* Dark green for net salary */
+            }
+            .error-message {
+                color: red;
+            }
+            /* Basic styling for your existing content */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                line-height: 1.6;
+                color: #333;
+            }
+            header {
+                text-align: center;
+                padding: 20px;
+                background-color: #e0f2f7;
+            }
+            main {
+                padding: 20px;
+                max-width: 900px;
+                margin: auto;
+            }
+            h1, h2 {
+                color: #0056b3;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+            .checkbox-container { /* Added styling for checkbox */
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px; /* Space between checkbox and label */
+            }
+            .checkbox-container input[type="checkbox"] {
+                width: auto; /* Override input[type="number"] style */
+                margin-bottom: 0;
+            }
+            .checkbox-group { /* Added for grouping checkboxes */
+                display: flex;
+                flex-direction: column; /* Stack checkboxes vertically */
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            #theme{
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1><b>PAYE, LST and NSSF CALCULATIONS</b></h1>
+            <button id="theme" onclick="changeBackgroundColor()">Change Theme</button>
+        </header>
+        <main>
+            <P>In Uganda, Pay As You Earn<b>(PAYE)</b> is charged on income earned from employment and business.
+            Employers deduct a percentage of an employee's gross monthly salary (including allowances and benefits) 
+            and remit it to the Uganda Revenue Authority(URA). The tax rates are progressive, meaning higher
+            earners pay a larger percentage.
+            </P>
+            <p>
+                Local Service Tax(<b>LST</b>) is a tax levied by local governments in Uganda on individuals in gainful employment, 
+                self-employed professionals,businessmen, and commercial farmers. Its purpose is to generate revenue for
+                local service delivery (e.g road maintenance etc). Employers typically deduct LST and remit it to the 
+                respective local council.
+            </p>
+            <p>
+                National Social Security fund(<b>NSSF</b>) is a mandatory social security scheme for employees in Uganda's private sector.
+                Employees pay 5% and the employer pays 10%. (Note: Your original text stated 15% for employer, but NSSF website clarifies 10% employer, 5% employee).
+            </p>
+            <h2>PAYE OVERVIEW FOR RESIDENT CITIZENS</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TAXABLE INCOME (UGX/Month)</th>
+                        <th>RATE OF TAX</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0 - 235,000</td>
+                        <td>Nil</td>
+                    </tr>
+                    <tr>
+                        <td>235,001 - 335,000</td>
+                        <td>(Income - 235,000) x 10%</td>
+                    </tr>
+                    <tr>
+                        <td>335,001 - 410,000</td>
+                        <td>(Income - 335,000) x 20% + 10,000</td>
+                    </tr>
+                    <tr>
+                        <td>410,001 - 10,000,000</td>
+                        <td>(Income - 410,000) x 30% + 25,000</td>
+                    </tr>
+                    <tr>
+                        <td>10,000,001 and above</td>
+                        <td>(Income - 10,000,000) x 40% + 2,902,000</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>PAYE OVERVIEW FOR NON-RESIDENT INDIVIDUALS</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>TAXABLE INCOME (UGX/Month)</th>
+                        <th>RATE OF TAX</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0 - 335,000</td>
+                        <td>Income x 10%</td>
+                    </tr>
+                    <tr>
+                        <td>335,001 - 410,000</td>
+                        <td>(Income - 335,000) x 20% + 33,500</td>
+                    </tr>
+                    <tr>
+                        <td>410,001 - 10,000,000</td>
+                        <td>(Income - 410,000) x 30% + 48,500</td>
+                    </tr>
+                    <tr>
+                        <td>10,000,001 and above</td>
+                        <td>(Income - 10,000,000) x 40% + 2,927,000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Local Service Tax (LST) Overview</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Amount of monthly income earned (in shs)</th>
+                        <th>Rate of local service (shs) per year</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Exceeding 100,000/= but not exceeding 200,000/=</td><td>5,000</td></tr>
+                    <tr><td>Exceeding 200,000/= but not exceeding 300,000/=</td><td>10,000</td></tr>
+                    <tr><td>Exceeding 300,000/= but not exceeding 400,000/=</td><td>20,000</td></tr>
+                    <tr><td>Exceeding 400,000/= but not exceeding 500,000/=</td><td>30,000</td></tr>
+                    <tr><td>Exceeding 500,000/= but not exceeding 600,000/=</td><td>40,000</td></tr>
+                    <tr><td>Exceeding 600,000/= but not exceeding 700,000/=</td><td>60,000</td></tr>
+                    <tr><td>Exceeding 700,000/= but not exceeding 800,000/=</td><td>70,000</td></tr>
+                    <tr><td>Exceeding 800,000/= but not exceeding 900,000/=</td><td>80,000</td></tr>
+                    <tr><td>Exceeding 900,000/= but not exceeding 1,000,000/=</td><td>90,000</td></tr>
+                    <tr><td>Exceeding 1,000,000/=</td><td>100,000</td></tr>
+                </tbody>
+            </table>
+        </main>
+        
+        <footer>
+            <h2>Calculate Your Monthly Earnings</h2>
+            <p>Enter your gross monthly income (UGX):</p>
+            <input type="number" id="grossIncome" placeholder="e.g., 500000" min="0">
+            
+            <div class="checkbox-group">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="addLST">
+                    <label for="addLST">Add Local Service Tax (LST)</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="isForeigner"> <label for="isForeigner">Foreigner?</label>
+                </div>
+            </div>
+
+            <button onclick="calculateSalary()">Calculate</button>
+
+            <p id="payeResult"></p>
+            <p id="nssfResult"></p>
+            <p id="lstResult"></p>
+            <p id="netSalaryResult"></p>
+        </footer>
+
+        <script>
+            /**
+             * Calculates the annual Local Service Tax (LST) in Uganda based on monthly income.
+             * The tax rates are derived from the provided Table 1.
+             *
+             * @param {number} monthlyIncome The gross monthly income earned in Ugandan Shillings (UGX).
+             * @returns {number} The annual Local Service Tax (LST) in Ugandan Shillings (UGX).
+             * Returns 0 if income is 100,000 UGX or less, or if input is invalid.
+             */
+            function calculateLocalServiceTax(monthlyIncome) {
+                if (typeof monthlyIncome !== 'number' || isNaN(monthlyIncome) || monthlyIncome < 0) {
+                    console.error("Invalid input for monthlyIncome. Please provide a non-negative number.");
+                    return 0;
+                }
+
+                let annualLST = 0;
+
+                if (monthlyIncome <= 100000) {
+                    annualLST = 0;
+                } else if (monthlyIncome <= 200000) {
+                    annualLST = 5000;
+                } else if (monthlyIncome <= 300000) {
+                    annualLST = 10000;
+                } else if (monthlyIncome <= 400000) {
+                    annualLST = 20000;
+                } else if (monthlyIncome <= 500000) {
+                    annualLST = 30000;
+                } else if (monthlyIncome <= 600000) {
+                    annualLST = 40000;
+                } else if (monthlyIncome <= 700000) {
+                    annualLST = 60000;
+                } else if (monthlyIncome <= 800000) {
+                    annualLST = 70000;
+                } else if (monthlyIncome <= 900000) {
+                    annualLST = 80000;
+                } else if (monthlyIncome <= 1000000) {
+                    annualLST = 90000;
+                } else { // Exceeding 1,000,000/=
+                    annualLST = 100000;
+                }
+
+                return annualLST;
+            }
+
+            /**
+             * Calculates the PAYE for Resident Citizens of Uganda.
+             * @param {number} grossIncome The gross monthly income.
+             * @returns {number} The calculated monthly PAYE.
+             */
+            function calculateResidentPAYE(grossIncome) {
+                let paye = 0;
+                if (grossIncome <= 235000) {
+                    paye = 0;
+                } else if (grossIncome <= 335000) {
+                    paye = (grossIncome - 235000) * 0.10;
+                } else if (grossIncome <= 410000) {
+                    paye = (100000 * 0.10) + ((grossIncome - 335000) * 0.20);
+                } else if (grossIncome <= 10000000) {
+                    paye = (100000 * 0.10) + (75000 * 0.20) + ((grossIncome - 410000) * 0.30);
+                } else {
+                    paye = (100000 * 0.10) + (75000 * 0.20) + (9590000 * 0.30) + ((grossIncome - 10000000) * 0.40);
+                }
+                return paye;
+            }
+
+            /**
+             * Calculates the PAYE for Non-Resident Individuals in Uganda.
+             * @param {number} grossIncome The gross monthly income.
+             * @returns {number} The calculated monthly PAYE.
+             */
+            function calculateNonResidentPAYE(grossIncome) {
+                let paye = 0;
+                if (grossIncome <= 335000) {
+                    paye = grossIncome * 0.10;
+                } else if (grossIncome <= 410000) {
+                    paye = (grossIncome - 335000) * 0.20 + 33500;
+                } else if (grossIncome <= 10000000) {
+                    paye = (grossIncome - 410000) * 0.30 + 48500;
+                } else {
+                    paye = (grossIncome - 10000000) * 0.40 + 2927000;
+                }
+                return paye;
+            }
+
+
+            function calculateSalary() {
+                const grossIncomeInput = document.getElementById('grossIncome');
+                const payeParagraph = document.getElementById('payeResult');
+                const nssfParagraph = document.getElementById('nssfResult');
+                const lstParagraph = document.getElementById('lstResult');
+                const netSalaryParagraph = document.getElementById('netSalaryResult');
+                const addLSTCheckbox = document.getElementById('addLST');
+                const isForeignerCheckbox = document.getElementById('isForeigner'); // Get foreigner checkbox
+
+                let grossIncome = parseFloat(grossIncomeInput.value);
+
+                // Clear previous results and reset colors
+                payeParagraph.textContent = '';
+                nssfParagraph.textContent = '';
+                lstParagraph.textContent = '';
+                netSalaryParagraph.textContent = '';
+                payeParagraph.classList.remove('error-message');
+                nssfParagraph.classList.remove('error-message');
+                lstParagraph.classList.remove('error-message');
+                netSalaryParagraph.classList.remove('error-message');
+
+
+                if (isNaN(grossIncome) || grossIncome < 0) {
+                    payeParagraph.textContent = "Please enter a valid positive number for your income.";
+                    payeParagraph.classList.add('error-message');
+                    return;
+                }
+
+                let paye = 0;
+                let nssfContribution = 0;
+                let annualLocalServiceTax = 0;
+                let monthlyLocalServiceTax = 0;
+
+                // --- PAYE Calculation based on 'Foreigner?' checkbox ---
+                let payeType = "";
+                if (isForeignerCheckbox.checked) {
+                    paye = calculateNonResidentPAYE(grossIncome);
+                    payeType = "Non-Resident PAYE";
+                } else {
+                    paye = calculateResidentPAYE(grossIncome);
+                    payeType = "Resident PAYE";
+                }
+
+                // NSSF Contribution (Employee's 5%)
+                const NSSF_EMPLOYEE_RATE = 0.05; // 5%
+                nssfContribution = grossIncome * NSSF_EMPLOYEE_RATE;
+
+                // --- Local Service Tax Calculation (Conditional) ---
+                if (addLSTCheckbox.checked) {
+                    annualLocalServiceTax = calculateLocalServiceTax(grossIncome);
+                    monthlyLocalServiceTax = annualLocalServiceTax / 12;
+                } else {
+                    annualLocalServiceTax = 0;
+                    monthlyLocalServiceTax = 0;
+                }
+
+                // Calculate Net Salary (Gross Income - PAYE - NSSF Employee Contribution - Monthly LST)
+                const netSalary = grossIncome - paye - nssfContribution - monthlyLocalServiceTax;
+
+                // Display results
+                payeParagraph.textContent = `Your estimated monthly ${payeType} is: UGX ${paye.toFixed(2)}`;
+                nssfParagraph.textContent = `Your estimated monthly NSSF (Employee) is: UGX ${nssfContribution.toFixed(2)}`;
+                
+                if (addLSTCheckbox.checked) {
+                    lstParagraph.textContent = `Your estimated monthly Local Service Tax is: UGX ${monthlyLocalServiceTax.toFixed(2)} (Annual: UGX ${annualLocalServiceTax.toFixed(2)})`;
+                } else {
+                    lstParagraph.textContent = '';
+                }
+
+                netSalaryParagraph.textContent = `Your estimated monthly Net Salary is: UGX ${netSalary.toFixed(2)}`;
+            }
+
+            // to manipulate the background color
+            function changeBackgroundColor(){
+                let randomColor=getRandomColor();
+                document.body.style.backgroundColor=randomColor;
+            }
+            function getRandomColor(){
+                let letters='0123456789ABCDEF';
+                let color='#';
+                for(let i=0;i<6;i++){
+                    color+=letters[Math.floor(Math.random()*16)];
+                }
+                return color;
+            }
+        </script>
+    </body>
+</html>
